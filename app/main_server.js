@@ -56,59 +56,59 @@ registerMealPublications(Meals, checkUserHasAccessToUserPlanningFactory(Meteor.u
 registerMealTemplatePublications(MealTemplates);
 
 Meteor.methods({
-  createMealFromTemplate: createMealFromTemplateFactory(Meals, Dishes, MealTemplates),
-  createMealTemplate: createMealTemplateFactory(Meals, Dishes, MealTemplates),
-  copyDishToMeal: copyDishToMealFactory(Dishes, incrementDishesPosition, updateMealDishes),
-  moveDishToMeal: moveDishToMealFactory(Dishes, incrementDishesPosition, updateMealDishes),
-  initializeAccountFromInvite: function initializeAccountFromInvite(token) {
-    return initializeAccountFromInviteFactory(Invites, setAccountRole, setUserCoachFactory(Meteor.users))(this.userId, token);
-  },
-  inviteCoach: function inviteCoach(email) {
-    return inviteCoachFactory(Invites, sendCoachInvitationFactory(Meteor.users))(this.userId, email);
-  },
-  inviteCoachee: function inviteCoachee(email) {
-    return inviteCoacheeFactory(Invites, sendCoacheeInvitationFactory(Meteor.users))(this.userId, email);
-  },
-  setAccountAsCoach: function setAccountAsCoach() {
-    return setAccountRole(this.userId, 'coach');
-  },
-  setAccountAsCoachee: function setAccountAsCoachee() {
-    return setAccountRole(this.userId, 'coachee');
-  },
+    createMealFromTemplate: createMealFromTemplateFactory(Meals, Dishes, MealTemplates),
+    createMealTemplate: createMealTemplateFactory(Meals, Dishes, MealTemplates),
+    copyDishToMeal: copyDishToMealFactory(Dishes, incrementDishesPosition, updateMealDishes),
+    moveDishToMeal: moveDishToMealFactory(Dishes, incrementDishesPosition, updateMealDishes),
+    initializeAccountFromInvite: function initializeAccountFromInvite(token) {
+        return initializeAccountFromInviteFactory(Invites, setAccountRole, setUserCoachFactory(Meteor.users))(this.userId, token);
+    },
+    inviteCoach: function inviteCoach(email) {
+        return inviteCoachFactory(Invites, sendCoachInvitationFactory(Meteor.users))(this.userId, email);
+    },
+    inviteCoachee: function inviteCoachee(email) {
+        return inviteCoacheeFactory(Invites, sendCoacheeInvitationFactory(Meteor.users))(this.userId, email);
+    },
+    setAccountAsCoach: function setAccountAsCoach() {
+        return setAccountRole(this.userId, 'coach');
+    },
+    setAccountAsCoachee: function setAccountAsCoachee() {
+        return setAccountRole(this.userId, 'coachee');
+    },
 });
 
 Meteor.startup(() => {
-  const createOAuthServiceConfiguration = createOAuthServiceConfigurationFactory(ServiceConfiguration.configurations);
+    const createOAuthServiceConfiguration = createOAuthServiceConfigurationFactory(ServiceConfiguration.configurations);
 
-  if (Meteor.settings.google) {
-    if (!Meteor.settings.google.clientId) {
-      console.log('Invalid clientId for google oauth in settings');
+    if (Meteor.settings.google) {
+        if (!Meteor.settings.google.clientId) {
+            console.log('Invalid clientId for google oauth in settings');
+        }
+
+        if (!Meteor.settings.google.secret) {
+            console.log('Invalid secret for google oauth in settings');
+        }
+
+        createOAuthServiceConfiguration('google', {
+            clientId: Meteor.settings.google.clientId,
+            secret: Meteor.settings.google.secret,
+        });
     }
 
-    if (!Meteor.settings.google.secret) {
-      console.log('Invalid secret for google oauth in settings');
+    if (Meteor.settings.facebook) {
+        if (!Meteor.settings.facebook.clientId) {
+            console.log('Invalid clientId for facebook oauth in settings');
+        }
+
+        if (!Meteor.settings.facebook.secret) {
+            console.log('Invalid secret for facebook oauth in settings');
+        }
+
+        createOAuthServiceConfiguration('facebook', {
+            appId: Meteor.settings.facebook.appId,
+            secret: Meteor.settings.facebook.secret,
+        });
     }
 
-    createOAuthServiceConfiguration('google', {
-      clientId: Meteor.settings.google.clientId,
-      secret: Meteor.settings.google.secret,
-    });
-  }
-
-  if (Meteor.settings.facebook) {
-    if (!Meteor.settings.facebook.clientId) {
-      console.log('Invalid clientId for facebook oauth in settings');
-    }
-
-    if (!Meteor.settings.facebook.secret) {
-      console.log('Invalid secret for facebook oauth in settings');
-    }
-
-    createOAuthServiceConfiguration('facebook', {
-      appId: Meteor.settings.facebook.appId,
-      secret: Meteor.settings.facebook.secret,
-    });
-  }
-
-  registerDefaultsMealTemplates(MealTemplates, Meteor.users);
+    registerDefaultsMealTemplates(MealTemplates, Meteor.users);
 });

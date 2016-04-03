@@ -2,7 +2,7 @@ import { assign } from 'lodash';
 import { SET_TITLE, SWITCH_LOCALE } from '../actions/app';
 
 export const initialState = {
-  title: 'Ma nutrition',
+  title: 'Carapai',
   locale: 'en',
 };
 
